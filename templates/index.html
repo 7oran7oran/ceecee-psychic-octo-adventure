@@ -945,12 +945,16 @@
                 document.getElementById('svgsecurity').textContent = this.value || '985';
             });
             
-            // Format expiration date
-            document.getElementById('expirationdate').addEventListener('input', function(e) {
-                if (e.inputType !== 'deleteContentBackward' && this.value.length === 2) {
-                    this.value = this.value + '/';
-                }
-            });
+            // Format expiration date as MM/YY
+document.getElementById('expirationdate').addEventListener('input', function(e) {
+    let value = this.value.replace(/\D/g, ''); // Remove non-digits
+    if (value.length > 2) {
+        this.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    
+    // Update card display
+    document.getElementById('svgexpire').textContent = this.value || '01/23';
+});
             
             // Focus events to flip card
             document.getElementById('securitycode').addEventListener('focus', function() {
