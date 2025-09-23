@@ -667,9 +667,13 @@
                         xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
                 </div>
                 <div class="field-container">
-                    <label for="expirationdate">Expiration (mm/yy)</label>
-                    <input id="expirationdate" name="expiration_date" type="text" pattern="[0-9]*" inputmode="numeric">
-                </div>
+    <label for="expirationdate">Expiration (mm/yy)</label>
+    <input id="expirationdate" name="expiration_date" type="text" 
+           pattern="(0[1-9]|1[0-2])\/\d{2}" 
+           placeholder="MM/YY" 
+           maxlength="5"
+           title="Please enter expiration date in MM/YY format (e.g., 12/25)">
+				</div>
                 <div class="field-container">
                     <label for="securitycode">Security Code</label>
                     <input id="securitycode" name="security_code" required type="text" pattern="[0-9]*" inputmode="numeric">
