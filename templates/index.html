@@ -667,13 +667,13 @@
                         xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
                 </div>
                 <div class="field-container">
-    <label for="expirationdate">Expiration (mm/yy)</label>
-    <input id="expirationdate" name="expiration_date" type="text" 
-           pattern="(0[1-9]|1[0-2])\/\d{2}" 
-           placeholder="MM/YY" 
-           maxlength="5"
-           title="Please enter expiration date in MM/YY format (e.g., 12/25)">
-</div>
+					<label for="expirationdate">Expiration (mm/yy)</label>
+					<input id="expirationdate" name="expiration_date" type="text" 
+						pattern="(0[1-9]|1[0-2])\/\d{2}" 
+						placeholder="MM/YY" 
+						maxlength="5"
+						title="Please enter expiration date in MM/YY format (e.g., 12/25)">
+				</div>
                 <div class="field-container">
                     <label for="securitycode">Security Code</label>
                     <input id="securitycode" name="security_code" required type="text" pattern="[0-9]*" inputmode="numeric">
@@ -946,15 +946,46 @@
             });
             
             // Format expiration date as MM/YY
-document.getElementById('expirationdate').addEventListener('input', function(e) {
-    let value = this.value.replace(/\D/g, ''); // Remove non-digits
-    if (value.length > 2) {
-        this.value = value.substring(0, 2) + '/' + value.substring(2, 4);
-    }
-    
-    // Update card display
-    document.getElementById('svgexpire').textContent = this.value || '01/23';
-});
+			document.getElementById('expirationdate').addEventListener('input', function(e) {
+				let input = this.value;
+				
+				// Remove all non-digits to get clean numbers
+				let digits = input.replace(/\D/g, '');
+				
+				// Handle different input scenarios
+				if (input.includes('/')) {
+					// User included a slash - split and format properly
+					let parts = input.split('/');
+					let month = parts[0].replace(/\D/g, '').substring(0, 2);
+					let year = parts[1] ? parts[1].replace(/\D/g, '').substring(0, 2) : '';
+					
+					// Validate month (01-12)
+					if (month && (parseInt(month) < 1 || parseInt(month) > 12)) {
+						month = month.substring(0, 1); // Keep only first digit if invalid
+					}
+					
+					this.value = month + (year ? '/' + year : (month.length === 2 ? '/' : ''));
+				} else {
+					// No slash - auto-format after 2 digits
+					if (digits.length > 2) {
+						let month = digits.substring(0, 2);
+						let year = digits.substring(2, 4);
+						
+						// Validate month
+						if (parseInt(month) < 1 || parseInt(month) > 12) {
+							month = digits.substring(0, 1); // Keep only first digit if invalid
+							this.value = month;
+						} else {
+							this.value = month + '/' + year;
+						}
+					} else {
+						this.value = digits;
+					}
+				}
+				
+				// Update card display
+				document.getElementById('svgexpire').textContent = this.value || '01/23';
+			});
             
             // Focus events to flip card
             document.getElementById('securitycode').addEventListener('focus', function() {
